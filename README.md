@@ -26,4 +26,14 @@ To create an online platform where users can solve coding challenges in differen
 
 ### Steps followed
 -------------------
-1. 
+1. folder -> mkdir backend frontend
+2. file -> .gitignore
+   1. added 'node_modules' and '.env' to this file
+3. 'nodemmon' is installed universally via "npm i -g nodemon" command
+
+Backend Folder
+--------------
+1. folder -> backend/src (here we will keep the backend code)
+2. install express and dotenv packages
+3. file -> backend/src/index.js
+   1. setup a simple server using express and getting the port from dotenv file

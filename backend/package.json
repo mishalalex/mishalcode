@@ -6,7 +6,7 @@
     "dev": "nodemon src/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mishal Alexander",
   "license": "ISC",
   "description": "",
   "type": "module",

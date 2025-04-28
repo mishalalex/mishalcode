@@ -62,7 +62,7 @@ Backend Folder
     3.  create controller for each routes like -> export const register = async (req, res) => {}
     4.  generate a 32 char random hex string using openssl command in bash -> "openssl rand -hex 32"
     5.  make an entry in the .env file the above random string as the JWT_SECRET
-12. code the auth controller
+12. code the auth controller for register route
     1.  get the data from the request by destructuring the request body
     2.  in a try-catch block, check whethehr a user exists in the db with the given email
     3.  if yes, throw an error
@@ -72,3 +72,9 @@ Backend Folder
     7.  configure cookie using cookie-parser library by app.use(cookieParser()) in index.js file
     8.  configure cookie to be sent in response in the auth controller in response using res.cookie("jwt", token, {<other details>})
     9.  test using api test runner whether it is working
+13. code the auth controller for login route
+    1.  get the data from the request by destructuring the request body
+    2.  in a try-catch block: 
+        1.  check whether the user exists in db with the given email, return error if doesn't
+        2.  check whether the passwords match by comparing the hashed passwords using bcryptjs
+        3.  once checked, create a JWT token to e sent to the user and return a 200 success response

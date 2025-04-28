@@ -86,3 +86,10 @@ Backend Folder
     1.  in a try-catch block:
         1.  return a success message that user has been authenticated successfully
 16. write a middleware for authenticate user
+    1.  get the jwt cookie from req.cookies.jwt
+    2.  throw error if no token
+    3.  decode the cookie using JWT_SECRET with jwt.verify("jwt",JWT_SECRET) method
+    4.  throw error if decoding isn't successful
+    5.  find the user from db from the id in the decoded cookie
+    6.  throw error if no user found
+    7.  if user found then add the user to the request by 'req.user = user' and call the next() method

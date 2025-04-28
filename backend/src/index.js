@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import cookieParser from 'cookie-parser'
+import cookieParser from "cookie-parser";
+
 import authRoutes from "./routes/auth.routes.js";
 
 // setting up dotenv in order to use env file
@@ -13,10 +14,9 @@ const app = express();
 
 // to accept request is json format
 app.use(express.json());
-
 app.use(cookieParser());
 
-//
+// healthcheck route
 app.get('/', (req, res) => {
     res.send('Hello, welcome to MishalCode')
 })

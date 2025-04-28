@@ -85,3 +85,4 @@ Backend Folder
 15. code the auth controller for check route
     1.  in a try-catch block:
         1.  return a success message that user has been authenticated successfully
+16. write a middleware for authenticate user

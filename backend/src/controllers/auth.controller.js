@@ -143,14 +143,14 @@ export const logout = async (req, res) => {
         // return a successful logout message
         res.status(200).json({
             success: true,
-            message: "User has been successfully logged out"
+            message: `${req.user.name} has been successfully logged out `
         })
 
     } catch (error) {
         // return error if any
-        console.log("Error while logging the user out");
+        console.log(`Error while logging the user out: ${error}`);
         res.status(500).json({
-            error: `Error while logging the user out: ${error}`
+            error: "Error while logging the user out"
         })
     }
 }
@@ -159,12 +159,13 @@ export const check = async (req, res) => {
     try {
         res.status(200).json({
             success: true,
-            message: "User is authenticated successfully"
-        })
+            message: "User is authenticated successfully",
+            user: req.user
+        });
     } catch (error) {
         console.log(`Error while authentication check: ${error}`);
         res.status(500).json({
-            error: `Error while authenticating user: ${error}`
+            error: `Error while authenticating user`
         })
     }
 }

@@ -78,3 +78,11 @@ Backend Folder
         1.  check whether the user exists in db with the given email, return error if doesn't
         2.  check whether the passwords match by comparing the hashed passwords using bcryptjs
         3.  once checked, create a JWT token to e sent to the user and return a 200 success response
+14. code the auth controller for logout route
+    1.  in a try-catch block:
+        1.  delete the stored cookie using 'res.clearCookies' method
+        2.  return a success message 
+15. code the auth controller for check route
+    1.  in a try-catch block:
+        1.  return a success message that user has been authenticated successfully
+16. write a middleware for authenticate user

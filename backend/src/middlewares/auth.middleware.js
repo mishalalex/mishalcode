@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { db } from '../libs/db.js';
+import { UserRole } from '../generated/prisma/index.js';
 
 export const authMiddleware = async (req, res, next) => {
 
@@ -60,5 +61,33 @@ export const authMiddleware = async (req, res, next) => {
         res.status(500).json({
             error: "Error while authenticating user"
         })
+    }
+}
+
+export const checkAdmin = async (req, res, next) => {
+    try {
+        // get the user id from the user object attached by the 'authMiddleware'
+        const userId = req.user.id;
+        // fetch the user's role by querying the db
+        const existingUser = await db.user.findUnique({
+            where: {
+                id: userId
+            },
+            select: {
+                role: true
+            }
+        })
+        // return error if the user is not found or user is not an admin
+        if (!existingUser || existingUser.role !== UserRole.ADMIN) {
+            return res.status(403).json({
+                message: "Access denied - Admin only"
+            })
+        }
+
+        // continue the code run if user is an admin
+        next();
+    } catch (error) {
+        console.log("Error checking user role: ", error);
+        res.status(500).json({ message: `Encountered error while checking user role: ${error}` })
     }
 }

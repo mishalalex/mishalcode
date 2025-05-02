@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
+import problemRoutes from "./routes/problem.routes.js";
 
 // setting up dotenv in order to use env file
 dotenv.config();
@@ -21,7 +22,9 @@ app.get('/', (req, res) => {
     res.send('Hello, welcome to MishalCode')
 })
 
-app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/auth', authRoutes);
+
+app.use('/api/v1/problems', problemRoutes);
 
 // made the express server app listen to the PORT in env file
 app.listen((PORT), () => {

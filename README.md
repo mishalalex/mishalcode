@@ -93,3 +93,32 @@ Backend Folder
     5.  find the user from db from the id in the decoded cookie
     6.  throw error if no user found
     7.  if user found then add the user to the request by 'req.user = user' and call the next() method
+17. create a new model problem
+    1.  problem model is for problems which the user can solve
+    2.  build a relation to user model with one user to many problem relationship that if a user is deleted, all the problems created by the user is also deleted
+    3.  run prisma commands to set the db:
+        1.  npx prisma generate
+        2.  npx prisma migrate dev
+        3.  npx prisma db push
+18. install & setup judge0 using docker (can be skipped by using sulu judge0 api (third party api))
+    1. install docker docker-compose docker.io
+       1. sudo apt install docker docker-compose docker.io
+    2. link to download: wget https://github.com/judge0/judge0/releases/download/v1.13.1/judge0-v1.13.1.zip
+    3. cd to location -> unzip judge0-v1.13.1.zip 
+    4. run -> docker-compose up -d db redis
+    5. run -> docker-compose up -d (after ~ 10 sec) - it will take some time to download and setup for the first time
+    6. once done, check whether it is working fine by going to -> http://localhost:2358/docs -> if you can see the docs for judge0 then everything is properly setup
+ 19. create problemRoutes and problemController
+     1.  update index.js to add a new route to 'api/v1/problems' to add problem endpoints
+     2.  create a new middleware to check whether the user has a role 'ADMIN' 
+         1.  we can put after the 'authMiddleware' in our routes to restrict access to ADMIN only endpoints
+     3.  file -> src/routes/problem.routes.js
+     4.   add routes for the following (all of them requires the 'authMiddleware' check):
+          1.   create a problem (admin)
+          2.   get all problems
+          3.   get all problems solved by user (user specific)
+          4.   get problem by id
+          5.   update a problem (admin)
+          6.   delete a problem (admin)
+     5.   file > src/controller/problem.controller.js
+     6.   add scaffolding controllers for each of the above routes in problem

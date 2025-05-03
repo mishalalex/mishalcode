@@ -1,7 +1,6 @@
 import express from "express";
 import { createProblem, getAllProblems, getAllProblemsSolvedByUser, getProblemById, updateProblemById, deleteProblemById } from "../controllers/problem.controller.js";
 import { authMiddleware, checkAdmin } from "../middlewares/auth.middleware.js";
-import { check } from "../controllers/auth.controller.js";
 
 const problemRoutes = express.Router()
 

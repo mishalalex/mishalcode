@@ -88,6 +88,32 @@ export const createProblem = async (req, res) => {
 }
 
 export const getAllProblems = async (req, res) => {
+    try {
+        // query db to get the problems that are available
+        const problems = await db.problem.findMany();
+
+        // return an error if there are no problems to return
+        if (!problems) {
+            return res.status(404).json({
+                error: "No problems found!"
+            })
+        }
+
+        // return success message with the list of problems
+        res.status(200).json({
+            success: true,
+            message: "fetched all the problems and are listed below:",
+            count: problems.length,
+            problems
+        })
+
+        // return it to user
+    } catch (error) {
+        console.log(`Error occurred while fetching all problems: ${error}`);
+        return res.status(500).json({
+            error: "Error occured while fetching all problems."
+        })
+    }
 
 }
 
@@ -96,7 +122,14 @@ export const getAllProblemsSolvedByUser = async (req, res) => {
 }
 
 export const getProblemById = async (req, res) => {
+    try {
 
+    } catch (error) {
+        console.log(`Error occurred while fetching the required problem: ${error}`);
+        return res.status(500).json({
+            error: "Error occured while fetching this problem."
+        })
+    }
 }
 
 export const updateProblemById = async (req, res) => {

@@ -100,6 +100,7 @@ Backend Folder
         1.  npx prisma generate
         2.  npx prisma migrate dev
         3.  npx prisma db push
+        4.  npx prisma studio
 18. install & setup judge0 using docker (can be skipped by using sulu judge0 api (third party api))
     1. install docker docker-compose docker.io
        1. sudo apt install docker docker-compose docker.io
@@ -122,3 +123,20 @@ Backend Folder
           6.   delete a problem (admin)
      5.   file > src/controller/problem.controller.js
      6.   add scaffolding controllers for each of the above routes in problem
+19.  create judge0.lib.js
+     1.   its a simple function which returns an id for a given language
+     2.   it has an object which has language-languageId key-value pairs
+20. 'create-problem' controller
+    1.  get all the required fields from request body
+    2.  check once more whether the user is an admin (though we check it with middleware)
+    3.  request body should have a property called 'referenceCode' which has two sub properties - 'language', 'solutionCode' - which judje0 expects
+    4.  get languageId stored in judge0.lib.js using a method with 'language' to check which language the user is adding the problem in & verify that language is supported
+    5.  verify the testcases are sent by the user as an array
+    6.  create a 'submissions' object which can be passed to judge0 using the data sent by user
+    7.  get the results from judge0 using 'submitBatch' method which comes as an array of 'tokens' where each item is an object
+    8.  extract the tokens out of the submission results using Array.map method
+    9.  using the tokens from the result, poll judje0 for all the submissions until all submissions are done using 'pollBatchResults' method in judge0.utils.js
+    10. verify that the test cases have passed (id=3 means passed) using a for loop
+    11. once all done, then save the problem in the database and return success message to user
+21. 'get-problems' controller
+    1.  

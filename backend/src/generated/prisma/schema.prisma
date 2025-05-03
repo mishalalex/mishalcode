@@ -51,7 +51,7 @@ model Problem {
   editorial   String?
 
   testcases          Json // [{"input":"1","output":"1"},{"input":"2",'output':"2"}]
-  codeSnippets       Json
+  codeSnippets       Json // starter code shown in the code editor
   referenceSolutions Json
 
   createdAt DateTime @default(now())

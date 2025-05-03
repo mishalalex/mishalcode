@@ -117,12 +117,25 @@ export const getAllProblems = async (req, res) => {
 
 }
 
-export const getAllProblemsSolvedByUser = async (req, res) => {
-
-}
-
 export const getProblemById = async (req, res) => {
     try {
+        // get the problem id from request params by destructuring the req.params
+        const { problem_id } = req.params;
+
+        // get the problem from db using the problem id sent by user
+        const problem = await db.problem.findUnique({
+            where: {
+                id: problem_id
+            }
+        })
+        // return error if not found
+        if (!problem) return res.status(404).json({ error: "Not found problem by this id!" })
+        // return success if found
+        res.status(200).json({
+            success: true,
+            message: "Problem found",
+            problem
+        })
 
     } catch (error) {
         console.log(`Error occurred while fetching the required problem: ${error}`);
@@ -133,9 +146,134 @@ export const getProblemById = async (req, res) => {
 }
 
 export const updateProblemById = async (req, res) => {
+    try {
+        // get the problem id from request params by destructuring the req.params
+        const { problem_id } = req.params;
+
+        // get the problem from db using the problem id sent by user
+        const problem = await db.problem.findUnique({
+            where: {
+                id: problem_id
+            }
+        })
+        // return error if not found
+        if (!problem) return res.status(404).json({ error: "Not found problem by this id!" })
+
+        // get all the required fields from request
+        const { title, description, difficulty, tags, examples, constraints, testcases, codeSnippets, referenceSolutions } = req.body;
+
+        if (!title || !description || !difficulty || !tags || !examples || !constraints || !testcases || !codeSnippets || !referenceSolutions) {
+            return res.status(404).json({ error: "You haven't provided one of the mandatory fields. Check the request. These fields are mandatory: title, description, difficulty, tags, examples, constraints, testcases, codesnippets, & referenceSolutions" })
+        }
+
+        for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
+            // get the language id from the language passed
+            const languageId = getJudge0LanguageId(language);
+
+            // return an error back to user if the language is not found
+            if (!languageId) return res.status(400).json({ error: `Language ${language} is not supported!` })
+
+            // return an error back to user if the type of test cases is an Array
+            if (!Array.isArray(testcases)) return res.status(400).json({ error: `Testcases should be an array` })
+
+            // we are crafting the data which needs to be sent out to judge0 using the data we got from user
+            const submissions = testcases.map(({ input, output }) => ({
+                source_code: solutionCode,
+                language_id: languageId,
+                stdin: input,
+                expected_output: output
+            }))
+
+            // the results from judge0 comes as an array of 'tokens'
+            const submissionResults = await submitBatch(submissions);
+
+            // extracting the tokens out of the submission results
+            const tokens = submissionResults.map((res) => res.token);
+
+            // poll judje0 for all the submissions until all submissions are done
+            const results = await pollBatchResults(tokens)
+
+            // verify that the test cases have passed (id=3 means passed)
+            for (let i = 0; i < results.length; i++) {
+                const result = results[i];
+                if (result.status.id !== 3) {
+                    return res.status(400).json({ error: `Testcase ${i} failed for language ${language}` })
+                }
+            }
+
+            // once all done, then save the problem in the database
+            const newProblem = await db.problem.update({
+                where: { id: problem_id },
+                data: {
+                    title,
+                    description,
+                    difficulty,
+                    tags,
+                    examples,
+                    constraints,
+                    testcases,
+                    codeSnippets,
+                    referenceSolutions,
+                    userId: req.user.id,
+
+                },
+
+            });
+
+            // return the problem object once it is stored in the database
+            return res.status(201).json({
+                success: true,
+                message: "The problem is updated successfully.",
+                problem: newProblem
+            });
+        }
+
+    } catch (error) {
+        console.log(`Error occurred while creating the new problem: ${error}`);
+        return res.status(500).json({
+            error: "Error occured while creating the new problem. Contact admin"
+        })
+    }
 
 }
 
 export const deleteProblemById = async (req, res) => {
+    try {
+        // get the problem id from request params by destructuring the req.params
+        const { problem_id } = req.params;
 
-} 
+        // get the problem from db using the problem id sent by user
+        const problem = await db.problem.findUnique({
+            where: {
+                id: problem_id
+            }
+        })
+        // return error if not found
+        if (!problem) return res.status(404).json({ error: "Not found problem by this id!" })
+
+        // once all done, then save the problem in the database
+        const deleteProblem = await db.problem.delete({
+            where: { id: problem_id },
+
+        });
+
+        console.log(deleteProblem)
+
+        // return the problem object once it is stored in the database
+        return res.status(200).json({
+            success: true,
+            message: "The problem is deleted successfully."
+        });
+
+    } catch (error) {
+        console.log(`Error occurred while deleting the problem: ${error}`);
+        return res.status(500).json({
+            error: "Error occured while deleting the problem. Contact admin"
+        })
+    }
+
+}
+
+export const getSolvedProblemsByUser = async (req, res) => {
+
+}

@@ -269,7 +269,7 @@ export const deleteProblemById = async (req, res) => {
         console.log(`Error occurred while deleting the problem: ${error}`);
         return res.status(500).json({
             error: "Error occured while deleting the problem. Contact admin"
-        })
+        });
     }
 
 }

@@ -8,7 +8,16 @@ export const getJudge0LanguageId = (language) => {
         "JAVA": 62,
         "JAVASCRIPT": 63
     }
-    return languageMap[language.toUpperCase()];
+    return languageMap[language.toUpperCase()] || null;
+}
+
+export const getJudge0LanguageName = (language) => {
+    const languageMap = {
+        71: "PYTHON",
+        62: "JAVA",
+        63: "JAVASCRIPT"
+    }
+    return languageMap[language] || "UNMAPPED_LANGUAGE";
 }
 
 // submits the user submissions to the judge0 api

@@ -167,4 +167,10 @@ Backend Folder
     5.  send the prepared batch of submissions to judge0 and get the response
     6.  extract the tokens from the response in an array
     7.  poll judge0 for results for all the submitted test cases until finished
-    8.  return the response back to user if everything is good and catch the error in the catch section
+    8.  analyze test case results and check whether all the test cases have passed
+    9.  store submission summary into submission table in our db
+    10. mark the problem as solved for the user, if all test cases have passed
+    11. save individual test case results into testcaseresult table in our db
+    12. query the submission table get the submission result with the test case status 
+    13. this also verifies whether the data got correctly stored in our db
+    14. return the query result with the user along with other standard output and catch any errors in the catch section

@@ -41,7 +41,8 @@ export const executeCode = async (req, res) => {
         console.log("Result-------------");
         console.log(results);
 
-        //  Analyze test case results
+        //  Analyze test case results to check whether all the testcases are passed
+        // and return a formatted response if it did
         let allPassed = true;
         const detailedResults = results.map((result, i) => {
             const stdout = result.stdout?.trim();
@@ -72,7 +73,7 @@ export const executeCode = async (req, res) => {
 
         console.log(detailedResults);
 
-        // store submission summary
+        // store submission summary into submission table in our db
         const submission = await db.submission.create({
             data: {
                 userId,
@@ -97,7 +98,7 @@ export const executeCode = async (req, res) => {
             },
         });
 
-        // If All passed = true mark problem as solved for the current user
+        // if all test cases have passed, then mark the problem as solved for the current user
         if (allPassed) {
             await db.problemSolved.upsert({
                 where: {
@@ -113,8 +114,9 @@ export const executeCode = async (req, res) => {
                 },
             });
         }
-        // 8. Save individual test case results  using detailedResult
 
+
+        // format and hold the testcase results into a variable
         const testCaseResults = detailedResults.map((result) => ({
             submissionId: submission.id,
             testCase: result.testCase,
@@ -128,10 +130,13 @@ export const executeCode = async (req, res) => {
             time: result.time,
         }));
 
+        // save individual test case results into testcaseresult table in our db
         await db.testCaseResult.createMany({
             data: testCaseResults,
         });
 
+        // query the submission table get the submission result with the test case status 
+        // this also verifies whether the data got correctly stored in our db
         const submissionWithTestCase = await db.submission.findUnique({
             where: {
                 id: submission.id,
@@ -140,7 +145,8 @@ export const executeCode = async (req, res) => {
                 testCases: true,
             },
         });
-        //
+
+        // return the query result with the user along with other standard output
         res.status(200).json({
             success: true,
             message: "Code Executed! Successfully!",

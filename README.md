@@ -49,9 +49,10 @@ Backend Folder
 7. file -> src/libs/db.js (we will keep prisma client)
 8. Update schema.prisma file with a db model
 9. prisma commands to run 
-   1.  npx generate prisma (update the db.js file with the prisma client setup code)
+   1.  npx prisma generate (update the db.js file with the prisma client setup code)
    2.  npx prisma migrate dev
    3.  npx prisma db push 
+   4.  npx prisma studio
 10. code the first route -> auth routes
     1.  folder -> src/routes -> file -> auth.routes.js
     2.  create an express routes -> const authRouter = express.Router()
@@ -97,10 +98,10 @@ Backend Folder
     1.  problem model is for problems which the user can solve
     2.  build a relation to user model with one user to many problem relationship that if a user is deleted, all the problems created by the user is also deleted
     3.  run prisma commands to set the db:
-        1.  npx prisma generate
-        2.  npx prisma migrate dev
-        3.  npx prisma db push
-        4.  npx prisma studio
+        1.  npx prisma generate // prisma generates the new models in the schema.model in the prisma client instance
+        2.  npx prisma migrate dev // migrates the database from prisma client 
+        3.  npx prisma db push // pushes the changes to db
+        4.  npx prisma studio // opens UI for prisma
 18. install & setup judge0 using docker (can be skipped by using sulu judge0 api (third party api))
     1. install docker docker-compose docker.io
        1. sudo apt install docker docker-compose docker.io
@@ -139,4 +140,31 @@ Backend Folder
     10. verify that the test cases have passed (id=3 means passed) using a for loop
     11. once all done, then save the problem in the database and return success message to user
 21. 'get-problems' controller
-    1.  
+    1.  get all problems from the db using db.problem.findMany() which fetches everything in the table
+    2.  return success if there are problems and error if there aren't any
+22. 'get-problem-by-id' controller
+    1.  verify whether such a problem exist in db using db.problem.findUnique() and return if it does
+23. 'update-problem' controller
+    1.  copy-paste from 'create-problem' controller and 'get-problem-by-id' controller
+    2.  just use db.problem.update({where: {id:problem_id},data: {updated data}})
+24. 'delete-problem' controller
+    1.  similar to 'get-problem-by-id' controller but use db.problem.delete({where:{id:proble,_id}})
+25. DB models   
+    1.  model for submission
+    2.  model for testcaseresult
+    3.  model for problemssolvedbyuser
+26. Execution Routes
+    1.  file -> controllers -> execution.controller.js
+    2.  create a placeholder controller to be filled in later and export it
+    3.  file -> routes -> execution.routes.js
+    4.  one route for '/' path which should run 'executeCode controller after checking the user (need not be admin) 
+    5.  update 'index.js' file to add 'app.use()' section for 'api/v1/execute-code' to executionRouters
+27. 'executeCode' controller
+    1.  destructure request body and get the required data
+    2.  get the userId from request object
+    3.  validate the stdin property to check on the testcases and return error on invalid or missing test cases
+    4.  prepare each test case for judge0 batch submission by running the .map() function on stdin
+    5.  send the prepared batch of submissions to judge0 and get the response
+    6.  extract the tokens from the response in an array
+    7.  poll judge0 for results for all the submitted test cases until finished
+    8.  return the response back to user if everything is good and catch the error in the catch section

@@ -10,6 +10,7 @@ export const executeCode = async (req, res) => {
         const { source_code, language_id, stdin, expected_outputs, problemId } =
             req.body;
 
+        console.log("problemId: ", problemId)
         const userId = req.user.id;
 
         // Validate test cases
@@ -71,7 +72,7 @@ export const executeCode = async (req, res) => {
             // console.log(`Matched testcase #${i+1}: ${passed}`)
         });
 
-        console.log(detailedResults);
+        console.log("detailedResults: ", detailedResults);
 
         // store submission summary into submission table in our db
         const submission = await db.submission.create({

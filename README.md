@@ -174,3 +174,27 @@ Backend Folder
     12. query the submission table get the submission result with the test case status 
     13. this also verifies whether the data got correctly stored in our db
     14. return the query result with the user along with other standard output and catch any errors in the catch section
+28. 'submission' route and controller
+    1.  file -> src/routes/submissions.routes.js
+        1.  create three routes and export the router - 
+            1.  get-all-submissions
+            2.  get-submission/:problem-id
+            3.  get-submission-count/:problem-id
+        2.  add the placeholder controller
+    2.  file -> src/containers/submissions.controller.js
+        1.  getAllSubmissions controller
+            1.  get the userId from request
+            2.  search submissions table in db with the user id
+            3.  return results to user
+        2.  getSubmissionsByProblem controller
+            1.  get the user Id from req.user.id and problem Id from request parameter
+            2.  search submissions table in db with the user id and problem id
+            3.  return the results to user
+        3.  getSubmissionCountByProblem controller
+            1.  get the problem id from request params
+            2.  search submissions table in db with the problem id
+            3.  return the results to user
+    3.  update index.js
+        1.  import the submissionRoutes
+        2.  route all the traffic from 'api/v1/submissions/' to use submissionRoutes
+29. 'playlist' routes and controller

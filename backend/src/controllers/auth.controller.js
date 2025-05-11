@@ -169,3 +169,37 @@ export const check = async (req, res) => {
         })
     }
 }
+
+export const getAllProblemsSolvedByUser = async (req, res) => {
+    try {
+        const problems = await db.problem.findMany({
+            where: {
+                solvedBy: {
+                    some: {
+                        userId: req.user.id
+                    }
+                }
+            },
+            // include - get the data from the connected table
+            include: {
+                solvedBy: {
+                    where: {
+                        userId: req.user.id
+                    }
+                }
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Problems solved by user fetched successfully",
+            problems
+        });
+
+    } catch (error) {
+        console.error(`Error while fetching the solved problems: ${error}`);
+        res.status(500).json({
+            error: `Error while fetching the solved problems`
+        });
+    }
+}

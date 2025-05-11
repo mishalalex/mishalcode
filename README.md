@@ -197,4 +197,9 @@ Backend Folder
     3.  update index.js
         1.  import the submissionRoutes
         2.  route all the traffic from 'api/v1/submissions/' to use submissionRoutes
-29. 'playlist' routes and controller
+29. update auth route and controller for 'get-problems-solved-by-user'
+    1.  query the db to find out the problems solved by user
+    2.  fetch the result to include from solvedBy array
+    3.  return the result to user
+30. 'playlist' routes and controller
+    1.  

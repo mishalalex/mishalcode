@@ -4,6 +4,6 @@ import { executeCode } from '../controllers/execution.controller.js';
 
 const executionRoutes = express.Router();
 
-executionRoutes.post("/", authMiddleware, executeCode)
+executionRoutes.post("/", authMiddleware, executeCode);
 
 export default executionRoutes;
